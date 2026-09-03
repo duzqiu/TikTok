@@ -4,6 +4,7 @@ Profile view — 我的页面
 import flet as ft
 
 STATUS_BAR_HEIGHT = 48
+PAGE_HORIZONTAL_PADDING = 28
 
 FUNCS = [
     ("收藏", ft.Icons.STAR, "0xFF9800"),
@@ -34,7 +35,7 @@ def build_profile(
 ):
     def _func_item(icon, label, color):
         return ft.Container(
-            expand=True,
+            width=52,
             alignment=ft.Alignment.CENTER,
             content=ft.Column([
                 ft.Container(
@@ -52,13 +53,13 @@ def build_profile(
         _func_item(FUNCS[0][1], FUNCS[0][0], FUNCS[0][2]),
         _func_item(FUNCS[1][1], FUNCS[1][0], FUNCS[1][2]),
         _func_item(FUNCS[2][1], FUNCS[2][0], FUNCS[2][2]),
-    ], spacing=8, expand=True)
+    ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN, spacing=0)
 
     row2 = ft.Row([
         _func_item(FUNCS[3][1], FUNCS[3][0], FUNCS[3][2]),
         _func_item(FUNCS[4][1], FUNCS[4][0], FUNCS[4][2]),
         _func_item(FUNCS[5][1], FUNCS[5][0], FUNCS[5][2]),
-    ], spacing=8, expand=True)
+    ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN, spacing=0)
 
     # 设置列表项
     setting_rows = []
@@ -69,7 +70,7 @@ def build_profile(
             trailing = ft.Icon(ft.Icons.CHEVRON_RIGHT, size=20, color=text_color3())
         setting_rows.append(
             ft.Container(
-                padding=ft.padding.Padding(left=4, top=10, right=4, bottom=10),
+                padding=ft.padding.Padding(left=0, top=10, right=0, bottom=10),
                 content=ft.Row([
                     ft.Container(
                         width=32, height=32, border_radius=16,
@@ -94,10 +95,30 @@ def build_profile(
         content=ft.Column([
             ft.Container(height=STATUS_BAR_HEIGHT),
             ft.Container(
-                padding=ft.padding.Padding(left=16, top=8, right=16, bottom=0),
+                padding=ft.padding.Padding(
+                    left=PAGE_HORIZONTAL_PADDING, top=8,
+                    right=PAGE_HORIZONTAL_PADDING, bottom=0,
+                ),
                 content=ft.Row([
-                    ft.Text("我的", size=20, weight=ft.FontWeight.W_500, color=text_color()),
-                ]),
+                    ft.IconButton(
+                        icon=ft.Icons.SUPPORT_AGENT,
+                        icon_size=22,
+                        icon_color="0x9C27B0",
+                        tooltip="客服",
+                        padding=0,
+                        width=28,
+                        height=28,
+                    ),
+                    ft.IconButton(
+                        icon=ft.Icons.QR_CODE_SCANNER,
+                        icon_size=22,
+                        icon_color="0x4A90D9",
+                        tooltip="扫一扫",
+                        padding=0,
+                        width=28,
+                        height=28,
+                    ),
+                ], alignment=ft.MainAxisAlignment.END, spacing=12),
             ),
             ft.Container(
                 expand=True,
@@ -105,7 +126,10 @@ def build_profile(
                     padding=ft.padding.Padding(left=0, top=0, right=0, bottom=0),
                     controls=[
                     ft.Container(
-                        padding=ft.padding.Padding(left=16, top=16, right=16, bottom=0),
+                        padding=ft.padding.Padding(
+                            left=PAGE_HORIZONTAL_PADDING, top=16,
+                            right=PAGE_HORIZONTAL_PADDING, bottom=0,
+                        ),
                         content=ft.Row([
                             # 头像盒子（30%）：头像居中
                             ft.Container(
@@ -142,7 +166,10 @@ def build_profile(
                     ),
                     # 数据展示：数字+名称，上下排列
                     ft.Container(
-                        margin=ft.margin.Margin(left=16, top=12, right=16, bottom=0),
+                        margin=ft.margin.Margin(
+                            left=PAGE_HORIZONTAL_PADDING, top=12,
+                            right=PAGE_HORIZONTAL_PADDING, bottom=0,
+                        ),
                         content=ft.Row([
                             ft.Container(
                                 expand=True,
@@ -171,23 +198,38 @@ def build_profile(
                         ], spacing=8),
                     ),
                     ft.Container(
-                        margin=ft.margin.Margin(left=4, top=12, right=4, bottom=0),
+                        margin=ft.margin.Margin(
+                            left=PAGE_HORIZONTAL_PADDING, top=12,
+                            right=PAGE_HORIZONTAL_PADDING, bottom=0,
+                        ),
                         padding=ft.padding.Padding(left=8, top=12, right=8, bottom=0),
                         content=ft.Column([
                             ft.Text("常用功能", size=14, weight=ft.FontWeight.W_500, color=text_color2()),
                             ft.Container(height=16),
-                            row1,
+                            ft.Container(
+                                margin=ft.margin.Margin(left=8, top=0, right=8, bottom=0),
+                                content=row1,
+                            ),
                             ft.Container(height=24),
-                            row2,
+                            ft.Container(
+                                margin=ft.margin.Margin(left=8, top=0, right=8, bottom=0),
+                                content=row2,
+                            ),
                         ], spacing=0),
                     ),
                     ft.Container(
-                        margin=ft.margin.Margin(left=4, top=12, right=4, bottom=0),
+                        margin=ft.margin.Margin(
+                            left=PAGE_HORIZONTAL_PADDING, top=12,
+                            right=PAGE_HORIZONTAL_PADDING, bottom=0,
+                        ),
                         padding=ft.padding.Padding(left=8, top=16, right=8, bottom=0),
                         content=ft.Column([
                             ft.Text("设置", size=14, weight=ft.FontWeight.W_500, color=text_color2()),
                             ft.Container(height=8),
-                            ft.Column(setting_rows, spacing=0),
+                            ft.Container(
+                                margin=ft.margin.Margin(left=8, top=0, right=8, bottom=0),
+                                content=ft.Column(setting_rows, spacing=0),
+                            ),
                         ], spacing=0),
                     ),
                     ft.Container(height=80),
