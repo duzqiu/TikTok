@@ -32,7 +32,7 @@ def build_home(
                     on_click=lambda e, idx=i: _on_primary_click(idx),
                     content=ft.Text(t, size=14,
                                     weight=ft.FontWeight.W_900,
-                                    color="0x333333" if is_active else "0x333333"),
+                                    color=text_color() if is_active else text_color3()),
                 )
             )
 
@@ -72,7 +72,7 @@ def build_home(
                     clip_behavior=ft.ClipBehavior.ANTI_ALIAS,
                     content=ft.Column([
                         ft.Container(
-                            height=130, bgcolor=bg, border_radius=8,
+                            aspect_ratio=4 / 3, bgcolor=bg, border_radius=8,
                             alignment=ft.Alignment.CENTER,
                             content=ft.Icon(ft.Icons.PLAY_CIRCLE_OUTLINE, size=40, color="white"),
                         ),
