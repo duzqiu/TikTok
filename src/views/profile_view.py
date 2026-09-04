@@ -32,6 +32,13 @@ def build_profile(
     text_color,
     text_color2,
     text_color3,
+    on_about=None,
+    on_language=None,
+    on_region=None,
+    selected_language="中文简体",
+    selected_region="中国",
+    scroll_ref=None,
+    on_scroll=None,
 ):
     def _func_item(icon, label, color):
         return ft.Container(
@@ -71,11 +78,27 @@ def build_profile(
     for name, icon, color, has_switch in SETTINGS_ITEMS:
         if has_switch:
             trailing = ft.Switch(value=False, active_color=color)
+        elif name == "语言":
+            trailing = ft.Row([
+                ft.Text(selected_language, size=12, color=text_color3()),
+                ft.Icon(ft.Icons.CHEVRON_RIGHT, size=20, color=text_color3()),
+            ], spacing=4)
+        elif name == "地区设置":
+            trailing = ft.Row([
+                ft.Text(selected_region, size=12, color=text_color3()),
+                ft.Icon(ft.Icons.CHEVRON_RIGHT, size=20, color=text_color3()),
+            ], spacing=4)
         else:
             trailing = ft.Icon(ft.Icons.CHEVRON_RIGHT, size=20, color=text_color3())
         setting_rows.append(
             ft.Container(
                 padding=ft.padding.Padding(left=0, top=10, right=0, bottom=10),
+                on_click=(
+                    (lambda e: on_about()) if name == "关于我们" and on_about
+                    else (lambda e: on_language()) if name == "语言" and on_language
+                    else (lambda e: on_region()) if name == "地区设置" and on_region
+                    else None
+                ),
                 content=ft.Row([
                     ft.Container(
                         width=32, height=32, border_radius=16,
@@ -128,7 +151,10 @@ def build_profile(
             ft.Container(
                 expand=True,
                 content=ft.ListView(
+                    ref=scroll_ref,
                     padding=ft.padding.Padding(left=0, top=0, right=0, bottom=0),
+                    on_scroll=on_scroll,
+                    build_controls_on_demand=False,
                     controls=[
                     ft.Container(
                         margin=ft.margin.Margin(

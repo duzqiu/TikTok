@@ -4,6 +4,9 @@ from views.home_view import build_home
 from views.explore_view import build_explore
 from views.profile_view import build_profile
 from views.settings_view import build_settings
+from views.about_view import build_about
+from views.language_view import build_language
+from views.region_view import build_region
 
 STATUS_BAR_HEIGHT = 48
 
@@ -38,6 +41,10 @@ def main(page: ft.Page):
     primary_tab_row = ft.Row(spacing=4)
     secondary_tab_row = ft.Row(spacing=0)
     home_content = ft.Container(expand=True)
+    profile_list_ref = ft.Ref[ft.ListView]()
+    profile_scroll_offset = [0.0]
+    selected_language = ["中文简体"]
+    selected_region = ["中国"]
 
     # ── 主题辅助 ──
     def is_dark():
@@ -85,6 +92,42 @@ def main(page: ft.Page):
         bottom_bar.visible = not hide
         page.update()
 
+    def _show_about():
+        bottom_bar.visible = False
+        content_area.content = build_about(
+            page, gradient_colors, text_color, text_color2, text_color3,
+            on_back=lambda: _switch(2),
+        )
+        page.update()
+
+    def _show_language():
+        bottom_bar.visible = False
+        content_area.content = build_language(
+            page, gradient_colors, text_color, text_color2, text_color3,
+            selected_language[0],
+            on_back=lambda: _switch(2),
+            on_select=_select_language,
+        )
+        page.update()
+
+    def _select_language(language):
+        selected_language[0] = language
+        _switch(2)
+
+    def _show_region():
+        bottom_bar.visible = False
+        content_area.content = build_region(
+            page, gradient_colors, text_color, text_color2, text_color3,
+            selected_region[0],
+            on_back=lambda: _switch(2),
+            on_select=_select_region,
+        )
+        page.update()
+
+    def _select_region(region):
+        selected_region[0] = region
+        _switch(2)
+
     # ── 页面构建 ──
     def _build_home():
         return build_home(
@@ -102,7 +145,18 @@ def main(page: ft.Page):
     def _build_profile():
         return build_profile(
             page, gradient_colors, text_color, text_color2, text_color3,
+            on_about=_show_about,
+            on_language=_show_language,
+            on_region=_show_region,
+            selected_language=selected_language[0],
+            selected_region=selected_region[0],
+            scroll_ref=profile_list_ref,
+            on_scroll=lambda e: profile_scroll_offset.__setitem__(0, e.pixels),
         )
+
+    async def _restore_profile_scroll():
+        if profile_scroll_offset[0] > 0 and profile_list_ref.current:
+            await profile_list_ref.current.scroll_to(offset=profile_scroll_offset[0])
 
     pages = [_build_home, _build_explore, _build_profile]
     tabs_config = [
@@ -137,6 +191,8 @@ def main(page: ft.Page):
             label_w.color = "0x4A90D9" if active else "0x999999"
         content_area.content = pages[idx]()
         page.update()
+        if idx == 2 and profile_scroll_offset[0] > 0:
+            page.run_task(_restore_profile_scroll)
 
     tab_row = ft.Row(
         controls=[_make_tab(i, *t) for i, t in enumerate(tabs_config)],
