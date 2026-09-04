@@ -7,6 +7,7 @@ from views.settings_view import build_settings
 from views.about_view import build_about
 from views.language_view import build_language
 from views.region_view import build_region
+from views.account_security_view import build_account_security
 
 STATUS_BAR_HEIGHT = 48
 
@@ -128,6 +129,14 @@ def main(page: ft.Page):
         selected_region[0] = region
         _switch(2)
 
+    def _show_account_security():
+        bottom_bar.visible = False
+        content_area.content = build_account_security(
+            page, gradient_colors, text_color, text_color2, text_color3,
+            on_back=lambda: _switch(2),
+        )
+        page.update()
+
     # ── 页面构建 ──
     def _build_home():
         return build_home(
@@ -148,6 +157,7 @@ def main(page: ft.Page):
             on_about=_show_about,
             on_language=_show_language,
             on_region=_show_region,
+            on_account_security=_show_account_security,
             selected_language=selected_language[0],
             selected_region=selected_region[0],
             scroll_ref=profile_list_ref,

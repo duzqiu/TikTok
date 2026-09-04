@@ -35,6 +35,7 @@ def build_profile(
     on_about=None,
     on_language=None,
     on_region=None,
+    on_account_security=None,
     selected_language="中文简体",
     selected_region="中国",
     scroll_ref=None,
@@ -97,6 +98,7 @@ def build_profile(
                     (lambda e: on_about()) if name == "关于我们" and on_about
                     else (lambda e: on_language()) if name == "语言" and on_language
                     else (lambda e: on_region()) if name == "地区设置" and on_region
+                    else (lambda e: on_account_security()) if name == "账号安全" and on_account_security
                     else None
                 ),
                 content=ft.Row([
