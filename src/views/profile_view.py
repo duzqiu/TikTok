@@ -7,22 +7,22 @@ STATUS_BAR_HEIGHT = 48
 PAGE_HORIZONTAL_PADDING = 28
 
 FUNCS = [
-    ("收藏", ft.Icons.STAR, "0xFF9800"),
-    ("历史", ft.Icons.HISTORY, "0x4CAF50"),
-    ("草稿箱", ft.Icons.DRAFTS, "0x2196F3"),
-    ("关注", ft.Icons.FAVORITE, "0xE91E63"),
-    ("消息", ft.Icons.CHAT, "0x9C27B0"),
-    ("设置", ft.Icons.SETTINGS, "0x4A90D9"),
+    ("收藏", ft.Icons.STAR, "0x64B5F6"),
+    ("历史", ft.Icons.HISTORY, "0x81C784"),
+    ("草稿箱", ft.Icons.DRAFTS, "0x81D4FA"),
+    ("关注", ft.Icons.FAVORITE, "0x80CBC4"),
+    ("消息", ft.Icons.CHAT, "0x90CAF9"),
+    ("设置", ft.Icons.SETTINGS, "0xA5D6A7"),
 ]
 
 # 设置列表: (名称, ICON, 颜色, 是否有开关)
 SETTINGS_ITEMS = [
-    ("账号安全", ft.Icons.SHIELD, "0x4A90D9", False),
-    ("通知设置", ft.Icons.NOTIFICATIONS, "0xFF9800", True),
-    ("语言", ft.Icons.LANGUAGE, "0x9C27B0", False),
-    ("地区设置", ft.Icons.PUBLIC, "0x2196F3", False),
-    ("清除缓存", ft.Icons.DELETE_SWEEP, "0xE91E63", False),
-    ("关于我们", ft.Icons.INFO, "0x4CAF50", False),
+    ("账号安全", ft.Icons.SHIELD, "0x64B5F6", False),
+    ("通知设置", ft.Icons.NOTIFICATIONS, "0x81C784", True),
+    ("语言", ft.Icons.LANGUAGE, "0x81D4FA", False),
+    ("地区设置", ft.Icons.PUBLIC, "0x80CBC4", False),
+    ("清除缓存", ft.Icons.DELETE_SWEEP, "0x90CAF9", False),
+    ("关于我们", ft.Icons.INFO, "0xA5D6A7", False),
 ]
 
 
@@ -60,6 +60,11 @@ def build_profile(
         _func_item(FUNCS[4][1], FUNCS[4][0], FUNCS[4][2]),
         _func_item(FUNCS[5][1], FUNCS[5][0], FUNCS[5][2]),
     ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN, spacing=0)
+
+    card_bg = ft.Colors.with_opacity(
+        0.7,
+        "0x2A2A2A" if page.theme_mode == ft.ThemeMode.DARK else "white",
+    )
 
     # 设置列表项
     setting_rows = []
@@ -103,7 +108,7 @@ def build_profile(
                     ft.IconButton(
                         icon=ft.Icons.SUPPORT_AGENT,
                         icon_size=22,
-                        icon_color="0x9C27B0",
+                        icon_color="0x80CBC4",
                         tooltip="客服",
                         padding=0,
                         width=28,
@@ -112,7 +117,7 @@ def build_profile(
                     ft.IconButton(
                         icon=ft.Icons.QR_CODE_SCANNER,
                         icon_size=22,
-                        icon_color="0x4A90D9",
+                        icon_color="0x64B5F6",
                         tooltip="扫一扫",
                         padding=0,
                         width=28,
@@ -126,11 +131,15 @@ def build_profile(
                     padding=ft.padding.Padding(left=0, top=0, right=0, bottom=0),
                     controls=[
                     ft.Container(
-                        padding=ft.padding.Padding(
+                        margin=ft.margin.Margin(
                             left=PAGE_HORIZONTAL_PADDING, top=16,
                             right=PAGE_HORIZONTAL_PADDING, bottom=0,
                         ),
-                        content=ft.Row([
+                        padding=ft.padding.Padding(left=16, top=16, right=16, bottom=16),
+                        border_radius=16,
+                        bgcolor=card_bg,
+                        content=ft.Column([
+                            ft.Row([
                             # 头像盒子（30%）：头像居中
                             ft.Container(
                                 expand=3,
@@ -162,15 +171,10 @@ def build_profile(
                                     ft.Text("ID: 88888888", size=12, color=text_color3()),
                                 ], horizontal_alignment=ft.CrossAxisAlignment.START, spacing=0),
                             ),
-                        ], vertical_alignment=ft.CrossAxisAlignment.CENTER),
-                    ),
-                    # 数据展示：数字+名称，上下排列
-                    ft.Container(
-                        margin=ft.margin.Margin(
-                            left=PAGE_HORIZONTAL_PADDING, top=12,
-                            right=PAGE_HORIZONTAL_PADDING, bottom=0,
-                        ),
-                        content=ft.Row([
+                            ], vertical_alignment=ft.CrossAxisAlignment.CENTER),
+                            ft.Container(height=20),
+                            # 数据展示：数字+名称，上下排列
+                            ft.Row([
                             ft.Container(
                                 expand=True,
                                 content=ft.Column([
@@ -195,14 +199,17 @@ def build_profile(
                                     ft.Text("关注", size=11, color=text_color3()),
                                 ], horizontal_alignment=ft.CrossAxisAlignment.CENTER, spacing=0),
                             ),
-                        ], spacing=8),
+                            ], spacing=8),
+                        ], spacing=0),
                     ),
                     ft.Container(
                         margin=ft.margin.Margin(
                             left=PAGE_HORIZONTAL_PADDING, top=12,
                             right=PAGE_HORIZONTAL_PADDING, bottom=0,
                         ),
-                        padding=ft.padding.Padding(left=8, top=12, right=8, bottom=0),
+                        padding=ft.padding.Padding(left=16, top=16, right=16, bottom=16),
+                        border_radius=16,
+                        bgcolor=card_bg,
                         content=ft.Column([
                             ft.Text("常用功能", size=14, weight=ft.FontWeight.W_500, color=text_color2()),
                             ft.Container(height=16),
@@ -222,7 +229,9 @@ def build_profile(
                             left=PAGE_HORIZONTAL_PADDING, top=12,
                             right=PAGE_HORIZONTAL_PADDING, bottom=0,
                         ),
-                        padding=ft.padding.Padding(left=8, top=16, right=8, bottom=0),
+                        padding=ft.padding.Padding(left=16, top=16, right=16, bottom=16),
+                        border_radius=16,
+                        bgcolor=card_bg,
                         content=ft.Column([
                             ft.Text("设置", size=14, weight=ft.FontWeight.W_500, color=text_color2()),
                             ft.Container(height=8),
