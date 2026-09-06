@@ -193,6 +193,7 @@ def main(page: ft.Page):
         is_settings[0] = False
         bottom_bar.visible = True
         current_index[0] = idx
+        publish_button.visible = idx == 0
         for i, (_, icon_w, label_w, icon_out, icon_in) in enumerate(bottom_tab_buttons):
             active = i == idx
             icon_w.name = icon_in if active else icon_out
@@ -228,12 +229,30 @@ def main(page: ft.Page):
         blur=ft.Blur(25, 25, ft.BlurTileMode.MIRROR),
     )
 
+    def _open_publish(e):
+        page.show_dialog(
+            ft.SnackBar(content=ft.Text("发布功能即将开放"))
+        )
+
+    publish_button = ft.FloatingActionButton(
+        icon=ft.Icons.ADD,
+        bgcolor="0x64B5F6",
+        foreground_color=ft.Colors.WHITE,
+        tooltip="发布",
+        on_click=_open_publish,
+    )
+
     page.add(
         ft.Stack([
             ft.Column([content_area], spacing=0, expand=True),
             ft.Container(
                 bottom=0, left=0, right=0,
                 content=bottom_bar,
+            ),
+            ft.Container(
+                right=36,
+                bottom=96,
+                content=publish_button,
             ),
         ], expand=True)
     )
