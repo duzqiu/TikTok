@@ -18,6 +18,27 @@ def build_explore(
         "秋季穿搭", "电影推荐", "健康饮食", "旅行攻略",
         "健身计划", "数码测评", "直播带货", "短视频创作",
     ]
+    hot_rankings = [
+        ("iPhone 17", "128.6万"),
+        ("AI大模型", "96.4万"),
+        ("新能源汽车", "82.1万"),
+        ("世界杯", "76.8万"),
+        ("秋季穿搭", "64.3万"),
+        ("电影推荐", "58.7万"),
+        ("健康饮食", "52.4万"),
+        ("旅行攻略", "47.9万"),
+        ("健身计划", "43.6万"),
+        ("数码测评", "39.8万"),
+        ("数码测评", "39.8万"),
+        ("数码测评", "39.8万"),
+        ("数码测评", "39.8万"),
+        ("数码测评", "39.8万"),
+        ("数码测评", "39.8万"),
+        ("数码测评", "39.8万"),
+        ("数码测评数码测评数码测评数码测评数码测评数码测评数码测评数码测评数码测评数码测评", "39.8万"),
+        ("数码测评", "39.8万"),
+        ("数码测评", "39.8万"),
+    ]
 
     # 搜索框盒子（无背景色，紧凑样式）
     search_box = ft.Container(
@@ -49,13 +70,87 @@ def build_explore(
                 content=ft.Text(word, size=12, color="0x4A90D9"),
             )
         )
+    ranking_rows = []
+    for index, (word, value) in enumerate(hot_rankings, start=1):
+        ranking_rows.append(
+            ft.Row(
+                [
+                    ft.Container(
+                        width=24,
+                        height=24,
+                        border_radius=6,
+                        bgcolor=(
+                            "0xFF7043" if index == 1
+                            else "0xFFB74D" if index == 2
+                            else "0xFFD54F" if index == 3
+                            else ft.Colors.with_opacity(0.12, "0x4A90D9")
+                        ),
+                        alignment=ft.Alignment.CENTER,
+                        content=ft.Text(
+                            str(index),
+                            size=12,
+                            weight=ft.FontWeight.BOLD,
+                            color=ft.Colors.WHITE if index <= 3 else text_color2(),
+                        ),
+                    ),
+                    ft.Text(
+                        word,
+                        size=13,
+                        color=text_color(),
+                        max_lines=1,
+                        overflow=ft.TextOverflow.ELLIPSIS,
+                        expand=True,
+                    ),
+                    ft.Row(
+                        [
+                            ft.Icon(
+                                ft.Icons.LOCAL_FIRE_DEPARTMENT,
+                                size=16,
+                                color="0xFF7043",
+                            ),
+                            ft.Text(value, size=12, color=text_color2()),
+                        ],
+                        width=76,
+                        spacing=4,
+                        alignment=ft.MainAxisAlignment.END,
+                    ),
+                ],
+                spacing=8,
+                vertical_alignment=ft.CrossAxisAlignment.CENTER,
+            )
+        )
+
+    ranking_box = ft.Container(
+        width=380,
+        margin=ft.margin.Margin(left=16, top=20, right=16, bottom=20),
+        padding=ft.padding.Padding(left=0, top=0, right=0, bottom=0),
+        content=ft.Column(
+            [
+                ft.Text(
+                    "热搜榜",
+                    size=14,
+                    weight=ft.FontWeight.W_500,
+                    color=text_color2(),
+                ),
+                ft.Container(
+                    padding=ft.padding.Padding(left=8, top=0, right=0, bottom=0),
+                    content=ft.Column(ranking_rows, spacing=8),
+                ),
+            ],
+            spacing=8,
+        ),
+    )
     hot_box = ft.Container(
+        width=380,
         margin=ft.margin.Margin(left=16, top=10, right=16, bottom=0),
-        content=ft.Column([
-            ft.Text("热搜", size=14, weight=ft.FontWeight.W_500, color=text_color2()),
-            ft.Container(height=6),
-            hot_chips_row,
-        ], spacing=0),
+        content=ft.Column(
+            [
+                ft.Text("热搜", size=14, weight=ft.FontWeight.W_500, color=text_color2()),
+                ft.Container(height=6),
+                hot_chips_row,
+            ],
+            spacing=0,
+        ),
     )
 
     return ft.Container(
@@ -64,10 +159,34 @@ def build_explore(
             begin=ft.Alignment(0, -1), end=ft.Alignment(0, 1),
             colors=gradient_colors(),
         ),
-        content=ft.Column([
-            ft.Container(height=STATUS_BAR_HEIGHT),
-            ft.Container(height=12),
-            search_box,
-            hot_box,
-        ], spacing=0, expand=True),
+        content=ft.Stack(
+            [
+                ft.Container(
+                    top=0,
+                    left=0,
+                    right=0,
+                    height=STATUS_BAR_HEIGHT,
+                    bgcolor=gradient_colors()[0],
+                ),
+                ft.Container(
+                    top=STATUS_BAR_HEIGHT,
+                    left=0,
+                    right=0,
+                    bottom=0,
+                    content=ft.Column(
+                        [
+                            ft.Container(height=12),
+                            search_box,
+                            hot_box,
+                            ranking_box,
+                            ft.Container(height=80),
+                        ],
+                        spacing=0,
+                        scroll=ft.ScrollMode.AUTO,
+                        expand=True,
+                    ),
+                ),
+            ],
+            expand=True,
+        ),
     )
