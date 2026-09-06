@@ -12,6 +12,7 @@ def build_explore(
     text_color,
     text_color2,
     on_search_focus=None,
+    on_back=None,
 ):
     hot_words = [
         "iPhone 17", "AI大模型", "新能源汽车", "世界杯",
@@ -42,8 +43,9 @@ def build_explore(
 
     # 搜索框盒子（无背景色，紧凑样式）
     search_box = ft.Container(
+        expand=True,
         alignment=ft.Alignment(0, -1),
-        padding=ft.padding.Padding(left=16, top=0, right=16, bottom=0),
+        padding=ft.padding.Padding(left=24, top=0, right=24, bottom=0),
         content=ft.TextField(
             hint_text="搜索内容、用户或话题",
             border_radius=12,
@@ -96,7 +98,7 @@ def build_explore(
                     ft.Text(
                         word,
                         size=13,
-                        color=text_color(),
+                        color=text_color2(),
                         max_lines=1,
                         overflow=ft.TextOverflow.ELLIPSIS,
                         expand=True,
@@ -121,8 +123,8 @@ def build_explore(
         )
 
     ranking_box = ft.Container(
-        width=380,
-        margin=ft.margin.Margin(left=16, top=20, right=16, bottom=20),
+        expand=True,
+        margin=ft.margin.Margin(left=24, top=20, right=24, bottom=20),
         padding=ft.padding.Padding(left=0, top=0, right=0, bottom=0),
         content=ft.Column(
             [
@@ -141,8 +143,8 @@ def build_explore(
         ),
     )
     hot_box = ft.Container(
-        width=380,
-        margin=ft.margin.Margin(left=16, top=10, right=16, bottom=0),
+        expand=True,
+        margin=ft.margin.Margin(left=24, top=10, right=24, bottom=0),
         content=ft.Column(
             [
                 ft.Text("热搜", size=14, weight=ft.FontWeight.W_500, color=text_color2()),
@@ -152,6 +154,42 @@ def build_explore(
             spacing=0,
         ),
     )
+
+    page_header = ft.Container(height=12)
+    if on_back is not None:
+        page_header = ft.Container(
+            height=48,
+            padding=ft.padding.Padding(left=8, top=0, right=12, bottom=0),
+            content=ft.Row(
+                [
+                    ft.IconButton(
+                        icon=ft.Icons.CHEVRON_LEFT,
+                        icon_size=26,
+                        icon_color=text_color2(),
+                        width=28,
+                        height=40,
+                        padding=0,
+                        tooltip="返回",
+                        on_click=lambda e: on_back(),
+                    ),
+                    ft.Text(
+                        "搜索",
+                        size=16,
+                        weight=ft.FontWeight.BOLD,
+                        color=text_color(),
+                    ),
+                ],
+                spacing=0,
+                vertical_alignment=ft.CrossAxisAlignment.CENTER,
+            ),
+        )
+    page_content = [
+        ft.Container(height=0 if on_back is not None else 12),
+        search_box,
+        hot_box,
+        ranking_box,
+        ft.Container(height=80),
+    ]
 
     return ft.Container(
         expand=True,
@@ -175,14 +213,15 @@ def build_explore(
                     bottom=0,
                     content=ft.Column(
                         [
-                            ft.Container(height=12),
-                            search_box,
-                            hot_box,
-                            ranking_box,
-                            ft.Container(height=80),
+                            page_header,
+                            ft.Column(
+                                page_content,
+                                spacing=0,
+                                scroll=ft.ScrollMode.AUTO,
+                                expand=True,
+                            ),
                         ],
                         spacing=0,
-                        scroll=ft.ScrollMode.AUTO,
                         expand=True,
                     ),
                 ),

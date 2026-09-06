@@ -19,20 +19,36 @@ def build_home(
     text_color,
     text_color2,
     text_color3,
+    on_search_click=None,
+    on_card_click=None,
 ):
     def _update_primary_tabs():
+        primary_tab_row.alignment = ft.MainAxisAlignment.CENTER
         primary_tab_row.controls.clear()
         for i, t in enumerate(home_tabs):
             is_active = (i == home_tab_index[0])
             primary_tab_row.controls.append(
                 ft.Container(
                     padding=ft.padding.Padding(left=12, top=6, right=12, bottom=6),
-                    border_radius=16,
-                    bgcolor=ft.Colors.with_opacity(0.3, "0x4A90D9") if is_active else None,
                     on_click=lambda e, idx=i: _on_primary_click(idx),
-                    content=ft.Text(t, size=14,
-                                    weight=ft.FontWeight.W_900,
-                                    color=text_color() if is_active else text_color3()),
+                    content=ft.Column(
+                        [
+                            ft.Text(
+                                t,
+                                size=14,
+                                weight=ft.FontWeight.W_900,
+                                color=text_color() if is_active else text_color3(),
+                            ),
+                            ft.Container(
+                                width=24,
+                                height=2,
+                                border_radius=1,
+                                bgcolor="0x4A90D9" if is_active else None,
+                            ),
+                        ],
+                        spacing=4,
+                        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                    ),
                 )
             )
 
@@ -49,7 +65,7 @@ def build_home(
                     on_click=lambda e, idx=i: _on_secondary_click(idx),
                     content=ft.Column([
                         ft.Text(t, size=12,
-                                weight=ft.FontWeight.W_500 if is_active else ft.FontWeight.NORMAL,
+                                weight=ft.FontWeight.BOLD,
                                 color=text_color() if is_active else text_color3()),
                         ft.Container(height=2, border_radius=1,
                                      bgcolor="0x4A90D9" if is_active else None),
@@ -70,6 +86,9 @@ def build_home(
                 ft.Container(
                     expand=True, border_radius=8,
                     clip_behavior=ft.ClipBehavior.ANTI_ALIAS,
+                    on_click=lambda e, item_index=i + 1: (
+                        on_card_click(item_index) if on_card_click else None
+                    ),
                     content=ft.Column([
                         ft.Container(
                             aspect_ratio=4 / 3, bgcolor=bg, border_radius=8,
@@ -80,7 +99,8 @@ def build_home(
                             padding=ft.padding.Padding(left=0, top=8, right=0, bottom=8),
                             content=ft.Column([
                                 ft.Text("这是一段描述文字，最多显示两行，超出部分用省略号显示",
-                                        size=11, color=text_color2(), max_lines=2,
+                                        size=11, color="black",
+                                        weight=ft.FontWeight.BOLD, max_lines=2,
                                         overflow=ft.TextOverflow.ELLIPSIS),
                                 ft.Row([
                                     ft.Container(
@@ -89,8 +109,10 @@ def build_home(
                                         content=ft.Text(str(i+1), size=10, color="white",
                                                         weight=ft.FontWeight.BOLD),
                                     ),
-                                    ft.Text(f"用户{i+1}", size=12, color=text_color3(),
-                                            overflow=ft.TextOverflow.ELLIPSIS),
+                                    ft.Text(f"用户{i+1}", size=12, color="black",
+                                            overflow=ft.TextOverflow.ELLIPSIS, expand=True),
+                                    ft.Icon(ft.Icons.FAVORITE_BORDER, size=16, color="black"),
+                                    ft.Text(str((i + 1) * 128), size=11, color="black"),
                                 ], spacing=6, vertical_alignment=ft.CrossAxisAlignment.CENTER),
                             ], spacing=4),
                         ),
@@ -144,11 +166,39 @@ def build_home(
             ft.Container(height=16),
             ft.Container(
                 padding=ft.padding.Padding(left=12, top=8, right=12, bottom=8),
-                content=ft.ListView(controls=[primary_tab_row], horizontal=True, height=36),
+                content=ft.Stack(
+                    height=40,
+                    expand=True,
+                    controls=[
+                        ft.Container(
+                            alignment=ft.Alignment.CENTER,
+                            content=primary_tab_row,
+                        ),
+                        ft.Container(
+                            width=40,
+                            alignment=ft.Alignment.CENTER_RIGHT,
+                            content=ft.IconButton(
+                                icon=ft.Icons.SEARCH,
+                                icon_color=text_color(),
+                                icon_size=22,
+                                tooltip="搜索",
+                                on_click=(
+                                    (lambda e: on_search_click())
+                                    if on_search_click is not None
+                                    else None
+                                ),
+                            ),
+                        ),
+                    ],
+                ),
             ),
             ft.Container(
                 padding=ft.padding.Padding(left=12, top=0, right=12, bottom=4),
-                content=ft.ListView(controls=[secondary_tab_row], horizontal=True, height=32),
+                content=ft.ListView(
+                    controls=[secondary_tab_row],
+                    horizontal=True,
+                    height=32,
+                ),
             ),
             home_content,
         ], spacing=0, expand=True),

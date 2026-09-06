@@ -29,11 +29,16 @@ def build_settings(
                 padding=ft.padding.Padding(left=8, top=0, right=16, bottom=0),
                 content=ft.Row([
                     ft.IconButton(
-                        icon=ft.Icons.ARROW_BACK, icon_size=24, icon_color=text_color(),
+                        icon=ft.Icons.CHEVRON_LEFT,
+                        icon_size=26,
+                        icon_color=text_color2(),
+                        width=28,
+                        height=40,
+                        padding=0,
                         on_click=lambda e: on_back() if on_back else None,
                     ),
-                    ft.Text("设置", size=20, weight=ft.FontWeight.W_500, color=text_color()),
-                ]),
+                    ft.Text("设置", size=16, weight=ft.FontWeight.W_500, color=text_color()),
+                ], spacing=0),
             ),
             ft.Container(height=16),
             ft.Container(

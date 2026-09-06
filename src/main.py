@@ -2,12 +2,16 @@ import flet as ft
 
 from views.home_view import build_home
 from views.explore_view import build_explore
+from views.detail_view import build_detail
+from views.search_view import build_search
 from views.profile_view import build_profile
 from views.settings_view import build_settings
 from views.about_view import build_about
 from views.language_view import build_language
 from views.region_view import build_region
 from views.account_security_view import build_account_security
+from views.login_view import build_login
+from views.register_view import build_register
 
 STATUS_BAR_HEIGHT = 48
 
@@ -19,6 +23,8 @@ def main(page: ft.Page):
     page.window.resizable = False
     page.padding = 0
     page.bgcolor = "white"
+    share_service = ft.Share()
+    page.services.append(share_service)
     page.theme = ft.Theme(scrollbar_theme=ft.ScrollbarTheme(thumb_visibility=False, track_visibility=False, thickness=0))
     page.dark_theme = ft.Theme(scrollbar_theme=ft.ScrollbarTheme(thumb_visibility=False, track_visibility=False, thickness=0))
 
@@ -26,15 +32,12 @@ def main(page: ft.Page):
     current_index = [0]
     is_settings = [False]
     bottom_tab_buttons = []
-    home_tabs = ["推荐", "关注", "热门", "直播", "音乐", "游戏"]
+    home_tabs = ["关注", "发现", "上海"]
     home_tab_index = [0]
     secondary_tabs = {
-        "推荐": ["短视频", "直播", "图文", "合集"],
         "关注": ["最新", "精选", "动态"],
-        "热门": ["热搜", "挑战", "话题"],
-        "直播": ["游戏", "才艺", "聊天", "户外", "美食"],
-        "音乐": ["流行", "古典", "电子", "摇滚"],
-        "游戏": ["王者", "原神", "英雄联盟", "和平精英"],
+        "发现": ["推荐", "热门", "关注"],
+        "上海": ["本地", "热门", "最新"],
     }
     secondary_index = [0]
     content_area = ft.Container(expand=True)
@@ -89,6 +92,17 @@ def main(page: ft.Page):
         )
         page.update()
 
+    def _show_register():
+        bottom_bar.visible = False
+        content_area.content = build_register(
+            page,
+            gradient_colors,
+            text_color,
+            text_color2,
+            on_back=_show_login,
+        )
+        page.update()
+
     def _hide_bottom_bar(hide):
         bottom_bar.visible = not hide
         page.update()
@@ -137,12 +151,67 @@ def main(page: ft.Page):
         )
         page.update()
 
+    def _show_login():
+        bottom_bar.visible = False
+        content_area.content = build_login(
+            page,
+            gradient_colors,
+            text_color,
+            text_color2,
+            on_back=lambda: _switch(2),
+            on_register=_show_register,
+        )
+        page.update()
+
+    def _show_search():
+        bottom_bar.visible = False
+        publish_button.visible = False
+        content_area.content = build_explore(
+            page,
+            gradient_colors,
+            text_color,
+            text_color2,
+            on_search_focus=_hide_bottom_bar,
+            on_back=lambda: _switch(0),
+        )
+        page.update()
+
+    def _show_detail(item_index):
+        bottom_bar.visible = False
+        publish_button.visible = False
+
+        async def _share_detail():
+            try:
+                await share_service.share_text(
+                    text=(
+                        f"用户{item_index}的内容："
+                        "这是一段内容详情文字，展示卡片中的完整描述信息。"
+                    )
+                )
+            except RuntimeError:
+                page.show_dialog(
+                    ft.SnackBar(content=ft.Text("当前平台暂不支持系统分享"))
+                )
+
+        content_area.content = build_detail(
+            page,
+            gradient_colors,
+            text_color,
+            text_color2,
+            item_index,
+            on_back=lambda: _switch(0),
+            on_share=_share_detail,
+        )
+        page.update()
+
     # ── 页面构建 ──
     def _build_home():
         return build_home(
             page, home_tabs, home_tab_index, secondary_tabs, secondary_index,
             primary_tab_row, secondary_tab_row, home_content,
             gradient_colors, text_color, text_color2, text_color3,
+            on_search_click=_show_search,
+            on_card_click=_show_detail,
         )
 
     def _build_explore():
@@ -158,6 +227,7 @@ def main(page: ft.Page):
             on_language=_show_language,
             on_region=_show_region,
             on_account_security=_show_account_security,
+            on_login=_show_login,
             selected_language=selected_language[0],
             selected_region=selected_region[0],
             scroll_ref=profile_list_ref,
@@ -236,9 +306,10 @@ def main(page: ft.Page):
 
     publish_button = ft.FloatingActionButton(
         icon=ft.Icons.ADD,
-        bgcolor="0x64B5F6",
+        bgcolor=ft.Colors.with_opacity(0.62, "0x64B5F6"),
         foreground_color=ft.Colors.WHITE,
         tooltip="发布",
+        elevation=8,
         on_click=_open_publish,
     )
 

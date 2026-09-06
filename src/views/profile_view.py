@@ -36,6 +36,7 @@ def build_profile(
     on_language=None,
     on_region=None,
     on_account_security=None,
+    on_login=None,
     selected_language="中文简体",
     selected_region="中国",
     scroll_ref=None,
@@ -172,6 +173,7 @@ def build_profile(
                             ft.Container(
                                 expand=3,
                                 alignment=ft.Alignment(0, 0),
+                                on_click=(lambda e: on_login()) if on_login else None,
                                 content=ft.Container(
                                     width=64, height=64, border_radius=32,
                                     clip_behavior=ft.ClipBehavior.ANTI_ALIAS,
@@ -182,10 +184,10 @@ def build_profile(
                                         right=ft.BorderSide(1, "0xCCCCCC"),
                                     ),
                                     alignment=ft.Alignment.CENTER,
-                                    content=ft.Image(
-                                        src="https://api.dicebear.com/9.x/adventurer/png?seed=TikTok&size=128",
-                                        fit="cover",
-                                        width=64, height=64,
+                                    content=ft.Icon(
+                                        ft.Icons.ACCOUNT_CIRCLE,
+                                        size=64,
+                                        color="0x9E9E9E",
                                     ),
                                 ),
                             ),
@@ -193,10 +195,11 @@ def build_profile(
                             ft.Container(
                                 expand=7,
                                 alignment=ft.Alignment(-1, 0),
+                                on_click=(lambda e: on_login()) if on_login else None,
                                 content=ft.Column([
-                                    ft.Text("TikTok用户", size=18, weight=ft.FontWeight.W_500, color=text_color()),
+                                    ft.Text("登录/注册", size=18, weight=ft.FontWeight.W_500, color=text_color()),
                                     ft.Container(height=4),
-                                    ft.Text("ID: 88888888", size=12, color=text_color3()),
+                                    ft.Text("登录后查看个人主页", size=12, color=text_color3()),
                                 ], horizontal_alignment=ft.CrossAxisAlignment.START, spacing=0),
                             ),
                             ], vertical_alignment=ft.CrossAxisAlignment.CENTER),

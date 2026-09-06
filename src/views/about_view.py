@@ -42,14 +42,17 @@ def build_about(page, gradient_colors, text_color, text_color2, text_color3, on_
                 ),
                 content=ft.Row([
                     ft.IconButton(
-                        icon=ft.Icons.ARROW_BACK,
-                        icon_size=22,
-                        icon_color=text_color(),
+                        icon=ft.Icons.CHEVRON_LEFT,
+                        icon_size=26,
+                        icon_color=text_color2(),
+                        width=28,
+                        height=40,
+                        padding=0,
                         tooltip="返回",
                         on_click=lambda e: on_back() if on_back else None,
                     ),
-                    ft.Text("关于我们", size=20, weight=ft.FontWeight.W_500, color=text_color()),
-                ], spacing=4),
+                    ft.Text("关于我们", size=16, weight=ft.FontWeight.W_500, color=text_color()),
+                ], spacing=0),
             ),
             ft.ListView(
                 expand=True,
