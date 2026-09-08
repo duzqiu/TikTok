@@ -12,6 +12,7 @@ from views.region_view import build_region
 from views.account_security_view import build_account_security
 from views.login_view import build_login
 from views.register_view import build_register
+from views.publish_view import build_publish
 
 STATUS_BAR_HEIGHT = 48
 
@@ -25,6 +26,8 @@ def main(page: ft.Page):
     page.bgcolor = "white"
     share_service = ft.Share()
     page.services.append(share_service)
+    file_picker = ft.FilePicker()
+    page.services.append(file_picker)
     page.theme = ft.Theme(scrollbar_theme=ft.ScrollbarTheme(thumb_visibility=False, track_visibility=False, thickness=0))
     page.dark_theme = ft.Theme(scrollbar_theme=ft.ScrollbarTheme(thumb_visibility=False, track_visibility=False, thickness=0))
 
@@ -176,6 +179,19 @@ def main(page: ft.Page):
         )
         page.update()
 
+    def _show_publish():
+        bottom_bar.visible = False
+        publish_button.visible = False
+        content_area.content = build_publish(
+            page,
+            gradient_colors,
+            text_color,
+            text_color2,
+            file_picker,
+            on_back=lambda: _switch(0),
+        )
+        page.update()
+
     def _show_detail(item_index):
         bottom_bar.visible = False
         publish_button.visible = False
@@ -300,9 +316,7 @@ def main(page: ft.Page):
     )
 
     def _open_publish(e):
-        page.show_dialog(
-            ft.SnackBar(content=ft.Text("发布功能即将开放"))
-        )
+        _show_publish()
 
     publish_button = ft.FloatingActionButton(
         icon=ft.Icons.ADD,
